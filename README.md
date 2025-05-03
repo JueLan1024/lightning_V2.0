@@ -52,9 +52,9 @@ Lightning 是一个基于 Go (Golang) 的社区管理 Web 应用程序，支持�
 ---
 
 ## 项目结构
-lightning_v2.0/
-├── canal/                              # Canal 配置文件目录
-│   ├── conf/                           # Canal 的配置文件
+- lightning_v2.0/
+- ├── canal/                              # Canal 配置文件目录
+- │   ├── conf/                           # Canal 的配置文件
 │   │   ├── canal.properties            # Canal 主配置文件
 │   │   ├── example/                    # Canal 实例配置
 │   │   │   ├── instance.properties     # Canal 实例的具体配置
