@@ -30,6 +30,7 @@ Lightning 是一个基于 Go (Golang) 的社区管理 Web 应用程序，支持�
 - **logger**：采用zap日志库实现快速结构化日志记录和printf风格的日志记录
 - **配置获取**：采用Viper获取配置信息
 - **参数检验**：采用Validator进行参数检验
+- **ID生成**：采用雪花算法生成用户和帖子ID
 - **登录认证**: 采用JWT鉴权以AccessToken和RefreshToken认证的方式进行登录认证
 - **用户黑名单**: redis中存储RefreshToken控制用户登录资格
 - **数据库**: 采用sqlx执行数据库操作
