@@ -1,0 +1,44 @@
+name: "web_app"
+mode: "dev"
+version: "v.0.01"
+host: "0.0.0.0"
+port: 8081
+start_time: "2025-04-08"
+machine_id: 1
+access_token_duration: 15m
+refresh_token_duration: 720h
+log:
+  level: "debug"
+  filename: "web_app.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+mysql:
+  host: "l-mysql"
+  port: 3306
+  user: "root"
+  password: "root"
+  dbname: "lightning"
+  max_open_conns: 200
+  max_idle_conns: 50
+redis:
+  host: "l-redis"
+  port: 6379
+  db: 0
+  password: ""
+  pool_size: 100
+kafka:
+  brokers:
+    - "l-kafka:19092"
+  group_id_community: "community"
+  group_id_post: "post"
+  group_id_vote_post: "vote_post"
+  topic_community: "lightning_community"
+  topic_post: "lightning_post"
+  topic_vote_post: "lightning_vote_post"
+  max_bytes: 10e6
+ratelimit:
+  fill_interval: 2s
+  cap: 2
+  
+

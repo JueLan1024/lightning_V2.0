@@ -1,0 +1,520 @@
+definitions:
+  controller._Response:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/controller.ResCode'
+        description: 业务响应状态码
+      data:
+        description: data
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  controller._ResponseCommunityDetail:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/controller.ResCode'
+        description: 业务响应状态码
+      data:
+        allOf:
+        - $ref: '#/definitions/models.CommunityDetail'
+        description: 社区详细信息data
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  controller._ResponseCommunityList:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/controller.ResCode'
+        description: 业务响应状态码
+      data:
+        description: 社区列表data
+        items:
+          $ref: '#/definitions/models.Community'
+        type: array
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  controller._ResponsePostDetail:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/controller.ResCode'
+        description: 业务响应状态码
+      data:
+        allOf:
+        - $ref: '#/definitions/models.ApiPostDetail'
+        description: 帖子详情data
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  controller._ResponsePosts:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/controller.ResCode'
+        description: 业务响应状态码
+      data:
+        allOf:
+        - $ref: '#/definitions/models.PostsAndToken'
+        description: 帖子列表和pageToken
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  controller.ResCode:
+    enum:
+    - 1000
+    - 1001
+    - 1002
+    - 1003
+    - 1004
+    - 1005
+    - 1006
+    - 1007
+    - 1008
+    - 1009
+    - 1010
+    - 1011
+    - 1012
+    type: integer
+    x-enum-varnames:
+    - CodeSuccess
+    - CodeInvalidParam
+    - CodeUsernameExist
+    - CodeUsernameOrPasswordWrong
+    - CodeInvalidToken
+    - CodeNeedLogin
+    - CodeNewToken
+    - CodeCommunityExists
+    - CodeCommunityNotExists
+    - CodePostNotExists
+    - CodeVoteRepeated
+    - CodeInvalidPageToken
+    - CodeServerBusy
+  models.ApiPostDetail:
+    properties:
+      author_id:
+        example: "0"
+        type: string
+      author_name:
+        type: string
+      community:
+        $ref: '#/definitions/models.CommunityDetail'
+      community_id:
+        example: "0"
+        type: string
+      content:
+        type: string
+      create_time:
+        type: string
+      post_id:
+        example: "0"
+        type: string
+      status:
+        example: "0"
+        type: string
+      title:
+        type: string
+      vote_num:
+        type: integer
+    type: object
+  models.Community:
+    properties:
+      community_id:
+        type: integer
+      community_name:
+        type: string
+    type: object
+  models.CommunityDetail:
+    properties:
+      community_id:
+        type: integer
+      community_name:
+        type: string
+      create_time:
+        type: string
+      introduction:
+        type: string
+    type: object
+  models.ParamCommunity:
+    properties:
+      community_id:
+        example: "0"
+        type: string
+      community_name:
+        type: string
+      introduction:
+        type: string
+    required:
+    - community_id
+    - community_name
+    - introduction
+    type: object
+  models.ParamLogin:
+    properties:
+      password:
+        example: "123"
+        type: string
+      username:
+        example: juelan
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.ParamPost:
+    properties:
+      community_id:
+        example: "0"
+        type: string
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - community_id
+    - content
+    - title
+    type: object
+  models.ParamSignUp:
+    properties:
+      password:
+        type: string
+      re_password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - re_password
+    - username
+    type: object
+  models.ParamVoteForPost:
+    properties:
+      post_id:
+        description: UserID string `json:"user_id"` 从当前登录用户获取ID
+        example: "7549250837680128"
+        type: string
+      vote_type:
+        description: 投票参数{1,0,-1}
+        enum:
+        - 1
+        - 0
+        - -1
+        example: "1"
+        type: string
+    required:
+    - post_id
+    type: object
+  models.PostsAndToken:
+    properties:
+      post_list:
+        items:
+          $ref: '#/definitions/models.ApiPostDetail'
+        type: array
+      token:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /admin/add/community:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的社区
+      parameters:
+      - description: 社区参数
+        in: body
+        name: community
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamCommunity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功创建社区
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 创建社区
+      tags:
+      - 社区相关接口
+  /api/v2/community:
+    get:
+      description: 获取所有社区的列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回社区列表
+          schema:
+            $ref: '#/definitions/controller._ResponseCommunityList'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 获取社区列表
+      tags:
+      - 社区相关接口
+  /api/v2/community/{id}:
+    get:
+      description: 根据社区ID获取社区的详细信息
+      parameters:
+      - description: 社区ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回社区详情
+          schema:
+            $ref: '#/definitions/controller._ResponseCommunityDetail'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "404":
+          description: 社区不存在
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 获取社区详情
+      tags:
+      - 社区相关接口
+  /api/v2/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: 登录参数
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功，返回 accessToken
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "401":
+          description: 用户名或密码错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 用户登录
+      tags:
+      - 用户相关接口
+  /api/v2/post:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的帖子
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 帖子参数
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功创建帖子
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "401":
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建帖子
+      tags:
+      - 帖子相关接口
+  /api/v2/post/{id}:
+    get:
+      description: 根据帖子ID获取帖子详情
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回帖子详情
+          schema:
+            $ref: '#/definitions/controller._ResponsePostDetail'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "404":
+          description: 帖子不存在
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 获取帖子详情
+      tags:
+      - 帖子相关接口
+  /api/v2/posts:
+    get:
+      description: 获取按时间或分数排序的帖子列表
+      parameters:
+      - description: 排序方式(time或score)
+        in: query
+        name: order
+        type: string
+      - description: pageToken
+        in: query
+        name: token
+        type: string
+      - description: 社区ID
+        in: query
+        name: community_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回pageToken和帖子列表
+          schema:
+            $ref: '#/definitions/controller._ResponsePosts'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 获取帖子列表
+      tags:
+      - 帖子相关接口
+  /api/v2/signup:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册接口
+      parameters:
+      - description: 注册参数
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      summary: 用户注册
+      tags:
+      - 用户相关接口
+  /api/v2/vote:
+    post:
+      consumes:
+      - application/json
+      description: 用户可以对帖子进行投票（点赞或点踩）
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 投票参数
+        in: body
+        name: vote
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamVoteForPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 投票成功
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "401":
+          description: 用户未登录
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "403":
+          description: 重复投票
+          schema:
+            $ref: '#/definitions/controller._Response'
+        "500":
+          description: 服务器繁忙
+          schema:
+            $ref: '#/definitions/controller._Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 给帖子投票
+      tags:
+      - 投票相关接口
+swagger: "2.0"

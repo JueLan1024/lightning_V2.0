@@ -1,0 +1,791 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/admin/add/community": {
+            "post": {
+                "description": "创建一个新的社区",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区相关接口"
+                ],
+                "summary": "创建社区",
+                "parameters": [
+                    {
+                        "description": "社区参数",
+                        "name": "community",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParamCommunity"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功创建社区",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/community": {
+            "get": {
+                "description": "获取所有社区的列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区相关接口"
+                ],
+                "summary": "获取社区列表",
+                "responses": {
+                    "200": {
+                        "description": "成功返回社区列表",
+                        "schema": {
+                            "$ref": "#/definitions/controller._ResponseCommunityList"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/community/{id}": {
+            "get": {
+                "description": "根据社区ID获取社区的详细信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区相关接口"
+                ],
+                "summary": "获取社区详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "社区ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回社区详情",
+                        "schema": {
+                            "$ref": "#/definitions/controller._ResponseCommunityDetail"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "404": {
+                        "description": "社区不存在",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/login": {
+            "post": {
+                "description": "用户登录接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户相关接口"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "登录参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParamLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功，返回 accessToken",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "401": {
+                        "description": "用户名或密码错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/post": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建一个新的帖子",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关接口"
+                ],
+                "summary": "创建帖子",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 用户令牌",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
+                        "description": "帖子参数",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParamPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功创建帖子",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "401": {
+                        "description": "用户未登录",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/post/{id}": {
+            "get": {
+                "description": "根据帖子ID获取帖子详情",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关接口"
+                ],
+                "summary": "获取帖子详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "帖子ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回帖子详情",
+                        "schema": {
+                            "$ref": "#/definitions/controller._ResponsePostDetail"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "404": {
+                        "description": "帖子不存在",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/posts": {
+            "get": {
+                "description": "获取按时间或分数排序的帖子列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关接口"
+                ],
+                "summary": "获取帖子列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "排序方式(time或score)",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "pageToken",
+                        "name": "token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "社区ID",
+                        "name": "community_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回pageToken和帖子列表",
+                        "schema": {
+                            "$ref": "#/definitions/controller._ResponsePosts"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/signup": {
+            "post": {
+                "description": "用户注册接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户相关接口"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParamSignUp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/vote": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "用户可以对帖子进行投票（点赞或点踩）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "投票相关接口"
+                ],
+                "summary": "给帖子投票",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 用户令牌",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
+                        "description": "投票参数",
+                        "name": "vote",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParamVoteForPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "投票成功",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "401": {
+                        "description": "用户未登录",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "403": {
+                        "description": "重复投票",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器繁忙",
+                        "schema": {
+                            "$ref": "#/definitions/controller._Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.ResCode": {
+            "type": "integer",
+            "enum": [
+                1000,
+                1001,
+                1002,
+                1003,
+                1004,
+                1005,
+                1006,
+                1007,
+                1008,
+                1009,
+                1010,
+                1011,
+                1012
+            ],
+            "x-enum-varnames": [
+                "CodeSuccess",
+                "CodeInvalidParam",
+                "CodeUsernameExist",
+                "CodeUsernameOrPasswordWrong",
+                "CodeInvalidToken",
+                "CodeNeedLogin",
+                "CodeNewToken",
+                "CodeCommunityExists",
+                "CodeCommunityNotExists",
+                "CodePostNotExists",
+                "CodeVoteRepeated",
+                "CodeInvalidPageToken",
+                "CodeServerBusy"
+            ]
+        },
+        "controller._Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "业务响应状态码",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/controller.ResCode"
+                        }
+                    ]
+                },
+                "data": {
+                    "description": "data"
+                },
+                "message": {
+                    "description": "提示信息",
+                    "type": "string"
+                }
+            }
+        },
+        "controller._ResponseCommunityDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "业务响应状态码",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/controller.ResCode"
+                        }
+                    ]
+                },
+                "data": {
+                    "description": "社区详细信息data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.CommunityDetail"
+                        }
+                    ]
+                },
+                "message": {
+                    "description": "提示信息",
+                    "type": "string"
+                }
+            }
+        },
+        "controller._ResponseCommunityList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "业务响应状态码",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/controller.ResCode"
+                        }
+                    ]
+                },
+                "data": {
+                    "description": "社区列表data",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Community"
+                    }
+                },
+                "message": {
+                    "description": "提示信息",
+                    "type": "string"
+                }
+            }
+        },
+        "controller._ResponsePostDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "业务响应状态码",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/controller.ResCode"
+                        }
+                    ]
+                },
+                "data": {
+                    "description": "帖子详情data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.ApiPostDetail"
+                        }
+                    ]
+                },
+                "message": {
+                    "description": "提示信息",
+                    "type": "string"
+                }
+            }
+        },
+        "controller._ResponsePosts": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "业务响应状态码",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/controller.ResCode"
+                        }
+                    ]
+                },
+                "data": {
+                    "description": "帖子列表和pageToken",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.PostsAndToken"
+                        }
+                    ]
+                },
+                "message": {
+                    "description": "提示信息",
+                    "type": "string"
+                }
+            }
+        },
+        "models.ApiPostDetail": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "author_name": {
+                    "type": "string"
+                },
+                "community": {
+                    "$ref": "#/definitions/models.CommunityDetail"
+                },
+                "community_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "vote_num": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Community": {
+            "type": "object",
+            "properties": {
+                "community_id": {
+                    "type": "integer"
+                },
+                "community_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CommunityDetail": {
+            "type": "object",
+            "properties": {
+                "community_id": {
+                    "type": "integer"
+                },
+                "community_name": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "introduction": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ParamCommunity": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "community_name",
+                "introduction"
+            ],
+            "properties": {
+                "community_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "community_name": {
+                    "type": "string"
+                },
+                "introduction": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ParamLogin": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "123"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "juelan"
+                }
+            }
+        },
+        "models.ParamPost": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "community_id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ParamSignUp": {
+            "type": "object",
+            "required": [
+                "password",
+                "re_password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "re_password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ParamVoteForPost": {
+            "type": "object",
+            "required": [
+                "post_id"
+            ],
+            "properties": {
+                "post_id": {
+                    "description": "UserID string `json:\"user_id\"` 从当前登录用户获取ID",
+                    "type": "string",
+                    "example": "7549250837680128"
+                },
+                "vote_type": {
+                    "description": "投票参数{1,0,-1}",
+                    "type": "string",
+                    "enum": [
+                        1,
+                        0,
+                        -1
+                    ],
+                    "example": "1"
+                }
+            }
+        },
+        "models.PostsAndToken": {
+            "type": "object",
+            "properties": {
+                "post_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ApiPostDetail"
+                    }
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  l-mysql:
+    hostname: l-mysql
+    container_name: l-mysql
+    image: mysql:latest
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql/conf/my.cnf:/etc/mysql/my.cnf
+  
+  l-redis:
+    image: redis:latest
+    hostname: l-redis
+    container_name: l-redis
+    ports:
+      - "16379:6379"
+  
+  l-canal-server:
+    image: canal/canal-server:latest
+    hostname: l-canal-server
+    container_name: l-canal-server
+    ports:
+      - "11111:11111"
+    volumes:
+      - ./canal/conf/canal.properties:/home/admin/canal-server/conf/canal.properties
+      - ./canal/conf/example/instance.properties:/home/admin/canal-server/conf/example/instance.properties
+
+
+  l-zoo1:
+    image: confluentinc/cp-zookeeper:7.3.2
+    hostname: l-zoo1
+    container_name: l-zoo1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: l-zoo1:2888:3888
+
+  l-kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    hostname: l-kafka
+    container_name: l-kafka
+    ports:
+      - "9092:9092"
+      - "19092:19092"
+      - "29092:29092"
+      - "9999:9999"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://l-kafka:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "l-zoo1:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+    depends_on:
+      - l-zoo1
+
+  l-kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: l-kafka-ui
+    ports:
+      - 8080:8080
+    depends_on:
+      - l-kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "TRUE"
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "l-kafka:19092"
+
+  lightning_app:
+    build:
+      context: ./web_app  
+      dockerfile: dockerfile 
+    image: lightning_app
+    hostname: lightning_app
+    container_name: lightning_app
+    volumes:
+      - ./web_app/conf/config.yaml:/conf/config.yaml
+    ports:
+      - "8081:8081"
+    depends_on:
+      - l-mysql
+      - l-redis
+      - l-kafka
