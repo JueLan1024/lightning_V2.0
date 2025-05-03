@@ -19,7 +19,7 @@ var (
 
 const KeySendVotePostMessage = "vote_post"
 
-// Init 初始化 Kafka 消费者
+// Init 初始化 Kafka 消费者和生产者
 func Init(ctx context.Context, cfg *settings.KafkaConfig) {
 	// 创建 Kafka 消费者
 	communityReader = newKafkaReader(cfg.Brokers, cfg.GroupIDCommunity, cfg.TopicCommunity)

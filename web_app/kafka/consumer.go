@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"web_app/dao/mysql"
 	"web_app/models"
 
 	"github.com/segmentio/kafka-go"
@@ -108,39 +107,10 @@ func readMessageToMysql(ctx context.Context, r *kafka.Reader) (err error) {
 					zap.L().Error("json.Unmarshal failed", zap.Error(err))
 					continue
 				}
-				// 查询数据库是否已经有投票记录
-				exist, err := mysql.VotePostExist(ctx, msg)
-				if err != nil {
-					zap.L().Error("mysql.VotePostExist failed",
-						zap.Int64("post_id", msg.PostID),
-						zap.Int64("user_id", msg.UserID),
-						zap.Int8("vote_type", msg.VoteType),
-						zap.Error(err),
-					)
+				// 将投票数据插入mysql
+				if err = insertVoteInMysql(ctx, msg); err != nil {
+					zap.L().Error("insertVoteInMysql failed", zap.Error(err))
 					continue
-				}
-				if !exist { //没有投票记录
-					// 将消息存入数据库
-					if err = mysql.CreateVotePost(ctx, msg); err != nil {
-						zap.L().Error("mysql.CreateVotePost failed",
-							zap.Int64("post_id", msg.PostID),
-							zap.Int64("user_id", msg.UserID),
-							zap.Int8("vote_type", msg.VoteType),
-							zap.Error(err),
-						)
-						continue
-					}
-				} else { //有投票记录
-					// 更新数据库
-					if err = mysql.UpdateVotePost(ctx, msg); err != nil {
-						zap.L().Error("mysql.UpdateVotePost failed",
-							zap.Int64("post_id", msg.PostID),
-							zap.Int64("user_id", msg.UserID),
-							zap.Int8("vote_type", msg.VoteType),
-							zap.Error(err),
-						)
-						continue
-					}
 				}
 				// 提交 Kafka 消息的偏移量
 				if err = r.CommitMessages(ctx, m); err != nil {
