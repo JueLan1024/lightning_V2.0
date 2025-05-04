@@ -1,7 +1,7 @@
 # Lightning Web Application
 
 ## 项目简介
-Lightning 是一个基于 Go (Golang) 的社区管理 Web 应用程序，支持用户管理、社区管理、帖子发布和投票功能。项目采用CLD架构和gin框架，使用 MySQL、Redis、Kafka、Canal和Docker等组件，支持高并发的社区互动体验。
+Lightning 是一个基于 Go (Golang) 的社区管理 Web 应用程序，支持用户管理、社区管理、帖子发布和投票功能。项目采用CLD架构、RESTful API和gin框架，使用 MySQL、Redis、Kafka、Canal和Docker等组件，支持高并发的社区互动体验。
 
 ---
 
